@@ -1,0 +1,423 @@
+{
+  "TLML.Collections": {
+    "name": "TLML.Collections",
+    "version": "1.0.0.0",
+    "culture": "neutral",
+    "publicKeyToken": "col7d21a93b5a1c",
+    "dependencies": [{ "assemblyName": "TLML.Lang", "version": "1.0.0.0" }],
+    "namespaces": [
+      {
+        "name": "TLML.Collections",
+        "fullName": "TLML.Collections",
+        "types": [
+          {
+            "name": "Stack",
+            "fullName": "TLML.Collections.Stack",
+            "kind": "Class",
+            "accessModifier": "Public",
+            "namespaceName": "TLML.Collections",
+            "baseClass": "System.Object",
+            "types": [],
+            "constants": [],
+            "fields": [
+              { "name": "_items", "type": "System.Object[]", "accessModifier": "Private", "isStatic": false },
+              { "name": "_size", "type": "System.Int32", "accessModifier": "Private", "isStatic": false }
+            ],
+            "properties": [{ "name": "Count", "type": "System.Int32", "accessModifier": "Public", "hasGet": true, "hasSet": false, "isStatic": false }],
+            "events": [],
+            "methods": [
+              {
+                "name": "Push",
+                "returnType": "System.Void",
+                "parameters": [{ "name": "item", "type": "System.Object" }],
+                "accessModifier": "Public",
+                "isStatic": false,
+                "bodySimulated": ".method public void Push(object item)\n{\n    push.field _items\n    push.field _size\n    push.arg item\n    store.elem\n    \n    push.field _size\n    push.const 1\n    add\n    store.field _size\n    ret\n}"
+              },
+              {
+                "name": "Pop",
+                "returnType": "System.Object",
+                "parameters": [],
+                "accessModifier": "Public",
+                "isStatic": false,
+                "bodySimulated": ".method public object Pop()\n{\n    push.field _size\n    push.const 1\n    sub\n    store.field _size\n\n    push.field _items\n    push.field _size\n    push.const Null\n    store.elem\n\n    ret\n}"
+              },
+              {
+                "name": "Clear",
+                "returnType": "System.Void",
+                "parameters": [],
+                "accessModifier": "Public",
+                "isStatic": false,
+                "bodySimulated": ".method public void Clear()\n{\n    push.const 0\n    store.field _size\n    ret\n}"
+              }
+            ]
+          }
+        ],
+        "constants": []
+      }
+    ]
+  },
+  "TLML.Cryptography": {
+    "name": "TLML.Cryptography",
+    "version": "1.0.0.0",
+    "culture": "neutral",
+    "publicKeyToken": "crypto9b1a52e0bf7",
+    "dependencies": [{ "assemblyName": "TLML.Lang", "version": "1.0.0.0" }],
+    "namespaces": [
+      {
+        "name": "TLML.Cryptography",
+        "fullName": "TLML.Cryptography",
+        "types": [
+          {
+            "name": "Sha256",
+            "fullName": "TLML.Cryptography.Sha256",
+            "kind": "Class",
+            "accessModifier": "Public",
+            "namespaceName": "TLML.Cryptography",
+            "baseClass": "System.Object",
+            "types": [],
+            "constants": [],
+            "fields": [],
+            "properties": [],
+            "events": [],
+            "methods": [
+              {
+                "name": "ComputeHash",
+                "returnType": "System.String",
+                "parameters": [{ "name": "input", "type": "System.String" }],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static string ComputeHash(string input)\n{\n    push.arg input\n    call TLML.Lang.StringUtil.ToUpper\n    store.local 0\n\n    push.local 0\n    push.const \"HASHED_SHA256\"\n    add\n    ret\n}"
+              }
+            ]
+          },
+          {
+            "name": "Aes",
+            "fullName": "TLML.Cryptography.Aes",
+            "kind": "Class",
+            "accessModifier": "Public",
+            "namespaceName": "TLML.Cryptography",
+            "baseClass": "System.Object",
+            "types": [],
+            "constants": [],
+            "fields": [],
+            "properties": [],
+            "events": [],
+            "methods": [
+              {
+                "name": "Encrypt",
+                "returnType": "System.String",
+                "parameters": [
+                  { "name": "plainText", "type": "System.String" },
+                  { "name": "key", "type": "System.String" }
+                ],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static string Encrypt(string plainText, string key)\n{\n    push.arg plainText\n    push.arg key\n    add\n    ret\n}"
+              }
+            ]
+          }
+        ],
+        "constants": []
+      }
+    ]
+  },
+  "TLML.Diagnostics": {
+    "name": "TLML.Diagnostics",
+    "version": "1.0.0.0",
+    "culture": "neutral",
+    "publicKeyToken": "diag2d1e0fc4a9d",
+    "dependencies": [{ "assemblyName": "TLML.Lang", "version": "1.0.0.0" }],
+    "namespaces": [
+      {
+        "name": "TLML.Diagnostics",
+        "fullName": "TLML.Diagnostics",
+        "types": [
+          {
+            "name": "TraceLogger",
+            "fullName": "TLML.Diagnostics.TraceLogger",
+            "kind": "Class",
+            "accessModifier": "Public",
+            "namespaceName": "TLML.Diagnostics",
+            "baseClass": "System.Object",
+            "types": [],
+            "constants": [],
+            "fields": [],
+            "properties": [],
+            "events": [],
+            "methods": [
+              {
+                "name": "LogInfo",
+                "returnType": "System.Void",
+                "parameters": [{ "name": "message", "type": "System.String" }],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static void LogInfo(string message)\n{\n    push.const \"[INFO]: \"\n    push.arg message\n    add\n    call TLML.Lang.Console.WriteLine\n    ret\n}"
+              },
+              {
+                "name": "LogError",
+                "returnType": "System.Void",
+                "parameters": [{ "name": "message", "type": "System.String" }],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static void LogError(string message)\n{\n    push.const \"[ERROR]: \"\n    push.arg message\n    add\n    call TLML.Lang.Console.WriteLine\n    ret\n}"
+              }
+            ]
+          }
+        ],
+        "constants": []
+      }
+    ]
+  },
+  "TLML.Lang": {
+    "name": "TLML.Lang",
+    "version": "1.0.0.0",
+    "culture": "neutral",
+    "publicKeyToken": "tlmllang7c8a91b",
+    "dependencies": [],
+    "namespaces": [
+      {
+        "name": "TLML.Lang",
+        "fullName": "TLML.Lang",
+        "types": [
+          {
+            "name": "Console",
+            "fullName": "TLML.Lang.Console",
+            "kind": "Class",
+            "accessModifier": "Public",
+            "namespaceName": "TLML.Lang",
+            "isStatic": true,
+            "types": [],
+            "constants": [],
+            "fields": [],
+            "properties": [],
+            "events": [],
+            "methods": [
+              {
+                "name": "WriteLine",
+                "returnType": "System.Void",
+                "parameters": [{ "name": "value", "type": "System.String" }],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static void WriteLine(string value)\n{\n    push.arg value\n    call Native.ConsoleWrite\n    ret\n}"
+              },
+              {
+                "name": "Write",
+                "returnType": "System.Void",
+                "parameters": [{ "name": "value", "type": "System.String" }],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static void Write(string value)\n{\n    push.arg value\n    call Native.ConsoleWrite\n    ret\n}"
+              },
+              {
+                "name": "ReadLine",
+                "returnType": "System.String",
+                "parameters": [],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static string ReadLine()\n{\n    call Native.ConsoleRead\n    ret\n}"
+              },
+              {
+                "name": "Clear",
+                "returnType": "System.Void",
+                "parameters": [],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static void Clear()\n{\n    call Native.ConsoleClear\n    ret\n}"
+              },
+              {
+                "name": "Beep",
+                "returnType": "System.Void",
+                "parameters": [],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static void Beep()\n{\n    call Native.ConsoleBeep\n    ret\n}"
+              },
+              {
+                "name": "SetColor",
+                "returnType": "System.Void",
+                "parameters": [{ "name": "color", "type": "System.String" }],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static void SetColor(string color)\n{\n    push.arg color\n    call Native.ConsoleSetColor\n    ret\n}"
+              }
+            ]
+          },
+          {
+            "name": "Math",
+            "fullName": "TLML.Lang.Math",
+            "kind": "Class",
+            "accessModifier": "Public",
+            "namespaceName": "TLML.Lang",
+            "isStatic": true,
+            "types": [],
+            "constants": [
+              { "name": "PI", "type": "System.Double", "value": 3.141592653589793, "accessModifier": "Public" },
+              { "name": "E", "type": "System.Double", "value": 2.718281828459045, "accessModifier": "Public" }
+            ],
+            "fields": [],
+            "properties": [],
+            "events": [],
+            "methods": [
+              {
+                "name": "Sqrt",
+                "returnType": "System.Double",
+                "parameters": [{ "name": "d", "type": "System.Double" }],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static double Sqrt(double d)\n{\n    push.arg d\n    call Native.MathSqrt\n    ret\n}"
+              },
+              {
+                "name": "Abs",
+                "returnType": "System.Double",
+                "parameters": [{ "name": "d", "type": "System.Double" }],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static double Abs(double d)\n{\n    push.arg d\n    call Native.MathAbs\n    ret\n}"
+              },
+              {
+                "name": "Pow",
+                "returnType": "System.Double",
+                "parameters": [
+                  { "name": "base", "type": "System.Double" },
+                  { "name": "exponent", "type": "System.Double" }
+                ],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static double Pow(double base, double exponent)\n{\n    push.arg base\n    push.arg exponent\n    call Native.MathPow\n    ret\n}"
+              },
+              {
+                "name": "Random",
+                "returnType": "System.Double",
+                "parameters": [],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static double Random()\n{\n    call Native.MathRandom\n    ret\n}"
+              },
+              {
+                "name": "Max",
+                "returnType": "System.Double",
+                "parameters": [
+                  { "name": "a", "type": "System.Double" },
+                  { "name": "b", "type": "System.Double" }
+                ],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static double Max(double a, double b)\n{\n    push.arg a\n    push.arg b\n    call Native.MathMax\n    ret\n}"
+              },
+              {
+                "name": "Min",
+                "returnType": "System.Double",
+                "parameters": [
+                  { "name": "a", "type": "System.Double" },
+                  { "name": "b", "type": "System.Double" }
+                ],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static double Min(double a, double b)\n{\n    push.arg a\n    push.arg b\n    call Native.MathMin\n    ret\n}"
+              },
+              {
+                "name": "Round",
+                "returnType": "System.Double",
+                "parameters": [{ "name": "d", "type": "System.Double" }],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static double Round(double d)\n{\n    push.arg d\n    call Native.MathRound\n    ret\n}"
+              }
+            ]
+          },
+          {
+            "name": "Environment",
+            "fullName": "TLML.Lang.Environment",
+            "kind": "Class",
+            "accessModifier": "Public",
+            "namespaceName": "TLML.Lang",
+            "isStatic": true,
+            "types": [],
+            "constants": [],
+            "fields": [],
+            "properties": [],
+            "events": [],
+            "methods": [
+              {
+                "name": "GetTime",
+                "returnType": "System.Double",
+                "parameters": [],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static double GetTime()\n{\n    call Native.EnvGetTime\n    ret\n}"
+              },
+              {
+                "name": "GetOSVersion",
+                "returnType": "System.String",
+                "parameters": [],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static string GetOSVersion()\n{\n    call Native.EnvGetOSVersion\n    ret\n}"
+              },
+              {
+                "name": "GetCurrentUser",
+                "returnType": "System.String",
+                "parameters": [],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static string GetCurrentUser()\n{\n    call Native.EnvGetCurrentUser\n    ret\n}"
+              }
+            ]
+          },
+          {
+            "name": "StringUtil",
+            "fullName": "TLML.Lang.StringUtil",
+            "kind": "Class",
+            "accessModifier": "Public",
+            "namespaceName": "TLML.Lang",
+            "isStatic": true,
+            "types": [],
+            "constants": [],
+            "fields": [],
+            "properties": [],
+            "events": [],
+            "methods": [
+              {
+                "name": "Concat",
+                "returnType": "System.String",
+                "parameters": [
+                  { "name": "a", "type": "System.String" },
+                  { "name": "b", "type": "System.String" }
+                ],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static string Concat(string a, string b)\n{\n    push.arg a\n    push.arg b\n    call Native.StringConcat\n    ret\n}"
+              },
+              {
+                "name": "Length",
+                "returnType": "System.Double",
+                "parameters": [{ "name": "s", "type": "System.String" }],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static double Length(string s)\n{\n    push.arg s\n    call Native.StringLength\n    ret\n}"
+              },
+              {
+                "name": "ToUpper",
+                "returnType": "System.String",
+                "parameters": [{ "name": "s", "type": "System.String" }],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static string ToUpper(string s)\n{\n    push.arg s\n    call Native.StringToUpper\n    ret\n}"
+              },
+              {
+                "name": "ToLower",
+                "returnType": "System.String",
+                "parameters": [{ "name": "s", "type": "System.String" }],
+                "accessModifier": "Public",
+                "isStatic": true,
+                "bodySimulated": ".method public static string ToLower(string s)\n{\n    push.arg s\n    call Native.StringToLower\n    ret\n}"
+              }
+            ]
+          }
+        ],
+        "constants": []
+      }
+    ]
+  }
+}

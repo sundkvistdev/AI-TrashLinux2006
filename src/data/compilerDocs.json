@@ -1,0 +1,90 @@
+{
+  "directives": {
+    ".assembly": {
+      "title": "Assembly Declaration Directive",
+      "desc": "Defines the semantic name of the compiled assembly binary. This must be placed at the root level of your file.",
+      "syntax": ".assembly <assembly_name>"
+    },
+    ".version": {
+      "title": "Version Declaration Directive",
+      "desc": "Specifies the semantic version of the output assembly module.",
+      "syntax": ".version <major>.<minor>.<build>.<revision>"
+    },
+    ".import": {
+      "title": "Import Directive",
+      "desc": "Imports a dependency assembly library from GSOCC VFS (such as `TLML.Lang`) or registers a namespace mapping reference (`.import namespace Name`).",
+      "syntax": ".import assembly <assembly_name>\n.import namespace <namespace_path>"
+    },
+    ".namespace": {
+      "title": "Namespace Scope Directive",
+      "desc": "Establishes a logical grouping namespace. Code inside a namespace block must be enclosed in curly brackets `{` and `}`.",
+      "syntax": ".namespace <namespace_path> {\n  ...\n}"
+    },
+    ".class": {
+      "title": "Class Definition Directive",
+      "desc": "Defines a structured object class inside a namespace block. Classes can contain fields and executable methods.",
+      "syntax": ".class [public|private] [static] <class_name> {\n  ...\n}"
+    },
+    ".method": {
+      "title": "Method Definition Directive",
+      "desc": "Declares an executable bytecode routine inside a class structure. Encloses stacked instructions and local labels.",
+      "syntax": ".method [public|private] [static] <return_type> <method_name>(<params>) {\n  ...\n}"
+    },
+    ".field": {
+      "title": "Field Declaration Directive",
+      "desc": "Declares a class member field variable to store persistent state.",
+      "syntax": ".field [public|private] [static] <type> <field_name>"
+    }
+  },
+  "directivesList": [
+    ".assembly", ".version", ".import assembly", ".import namespace", ".namespace", ".class", ".method"
+  ],
+  "types": [
+    "void", "string", "int", "uint", "double", "float", "bool", "char", "object"
+  ],
+  "systemNamespaces": ["System", "TLML.Lang.System", "TLML.Lang.Console", "TLML.Lang"],
+  "standardLibs": {
+    "TLML.Lang.Console.WriteLine": "Writes a string or stack value to the standard output terminal, followed by a newline character.",
+    "TLML.Lang.Console.Write": "Writes a string or value directly to the output console without appending a newline.",
+    "TLML.Lang.Console.ReadLine": "Suspends execution and prompts the user for keyboard text input. Pushes the entered string onto the evaluation stack.",
+    "TLML.Lang.Console.Clear": "Clears all terminal lines and resets console buffers.",
+    "TLML.Lang.Console.Beep": "Generates a synthesized hardware beep alert sound via the Web Audio API.",
+    "TLML.Lang.Console.SetColor": "Sets the active output console text color. Supports HTML color strings (e.g. '#10b981').",
+    "TLML.Lang.Math.Sqrt": "Pops a number, computes its floating-point square root, and pushes the result onto the stack.",
+    "TLML.Lang.Math.Abs": "Pops a number and returns its absolute (positive) magnitude.",
+    "TLML.Lang.Math.Pow": "Pops exponent (y), pops base (x). Computes x raised to the power of y and pushes the result.",
+    "TLML.Lang.Math.Random": "Pushes a pseudo-random floating-point value between 0.0 and 1.0 onto the stack.",
+    "TLML.Lang.Math.Max": "Pops two numbers, evaluates which is larger, and pushes that number onto the stack.",
+    "TLML.Lang.Math.Min": "Pops two numbers, evaluates which is smaller, and pushes that number onto the stack.",
+    "TLML.Lang.Environment.GetTime": "Pushes a formatted string of the current machine local time onto the stack.",
+    "TLML.Lang.Environment.GetOSVersion": "Pushes the current environment kernel OS version string onto the stack.",
+    "TLML.Lang.Environment.GetCurrentUser": "Pushes the local shell active username ('tux') onto the stack.",
+    "TLML.Lang.StringUtil.Concat": "Pops two string values, concatenates them, and pushes the combined result.",
+    "TLML.Lang.StringUtil.Length": "Pops a string from the stack and pushes its total integer character count.",
+    "TLML.Lang.StringUtil.ToUpper": "Pops a string, converts all alphabetic characters to uppercase, and pushes it.",
+    "TLML.Lang.StringUtil.ToLower": "Pops a string, converts all alphabetic characters to lowercase, and pushes it."
+  },
+  "completions": [
+    { "label": "TLML.Lang.Console.WriteLine", "doc": "Writes line value to console output line buffer." },
+    { "label": "TLML.Lang.Console.Write", "doc": "Writes character or string value to console output line buffer." },
+    { "label": "TLML.Lang.Console.ReadLine", "doc": "Pauses stack VM to receive string value from standard input line." },
+    { "label": "TLML.Lang.Console.Clear", "doc": "Clears diagnostics panel outputs." },
+    { "label": "TLML.Lang.Console.Beep", "doc": "Synthesizes standard tone chime." },
+    { "label": "TLML.Lang.Console.SetColor", "doc": "Sets console output text color (e.g. 'green', 'yellow')." },
+    { "label": "TLML.Lang.Math.Sqrt", "doc": "Calculates the square root of popped stack value." },
+    { "label": "TLML.Lang.Math.Abs", "doc": "Returns the absolute magnitude of popped stack value." },
+    { "label": "TLML.Lang.Math.Pow", "doc": "Raises base to exponent (pops exponent first, then base)." },
+    { "label": "TLML.Lang.Math.Random", "doc": "Pushes double value between 0.0 and 1.0 onto virtual stack." },
+    { "label": "TLML.Lang.Math.Max", "doc": "Compares two popped values, pushing the higher one." },
+    { "label": "TLML.Lang.Math.Min", "doc": "Compares two popped values, pushing the lower one." },
+    { "label": "TLML.Lang.Math.Round", "doc": "Rounds popped float or double to nearest integer." },
+    { "label": "TLML.Lang.Environment.GetTime", "doc": "Pushes current Unix Epoch millisecond timestamp." },
+    { "label": "TLML.Lang.Environment.GetOSVersion", "doc": "Pushes operating system version string." },
+    { "label": "TLML.Lang.Environment.GetCurrentUser", "doc": "Pushes active logged-in user name string." },
+    { "label": "TLML.Lang.StringUtil.Concat", "doc": "Concatenates two popped string elements." },
+    { "label": "TLML.Lang.StringUtil.Length", "doc": "Pushes length integer of popped string element." },
+    { "label": "TLML.Lang.StringUtil.ToUpper", "doc": "Converts popped string to uppercase form." },
+    { "label": "TLML.Lang.StringUtil.ToLower", "doc": "Converts popped string to lowercase form." }
+  ]
+}
+

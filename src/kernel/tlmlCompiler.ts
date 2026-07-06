@@ -1,5 +1,6 @@
 import { ISocAssembly, ISocNamespace, ISocMethod, TypeKind } from "../types/soc";
 import { TlmlInstructionRegistry } from "./instructionRegistry";
+import docs from "../data/compilerDocs.json";
 
 // Helper for Levenshtein Distance (error suggestions)
 export function getLevenshteinDistance(a: string, b: string): number {
@@ -36,18 +37,14 @@ export function findClosestMatch(target: string, possibilities: string[]): strin
 }
 
 // System namespaces restricted list
-export const SYSTEM_NAMESPACES = ["System", "TLML.Lang.System", "TLML.Lang.Console", "TLML.Lang"];
+export const SYSTEM_NAMESPACES = docs.systemNamespaces;
 
 // Standard list of compiler keywords & instructions
 export const TLML_INSTRUCTIONS = TlmlInstructionRegistry.getInstance().getNames();
 
-export const TLML_DIRECTIVES = [
-  ".assembly", ".version", ".import assembly", ".import namespace", ".namespace", ".class", ".method"
-];
+export const TLML_DIRECTIVES = docs.directivesList;
 
-export const TLML_TYPES = [
-  "void", "string", "int", "uint", "double", "float", "bool", "char", "object"
-];
+export const TLML_TYPES = docs.types;
 
 // Parser & Compiler Function
 export function compileTLML(code: string, globalGsoc: any): { assembly: ISocAssembly | null; errors: string[] } {
@@ -108,26 +105,7 @@ export function compileTLML(code: string, globalGsoc: any): { assembly: ISocAsse
 
   // 2. Pre-build the entire possible call targets list once to solve O(N*M) scaling issue
   const allPossibleTypes: string[] = [
-    "TLML.Lang.Console.WriteLine",
-    "TLML.Lang.Console.Write",
-    "TLML.Lang.Console.ReadLine",
-    "TLML.Lang.Console.Clear",
-    "TLML.Lang.Console.Beep",
-    "TLML.Lang.Console.SetColor",
-    "TLML.Lang.Math.Sqrt",
-    "TLML.Lang.Math.Abs",
-    "TLML.Lang.Math.Pow",
-    "TLML.Lang.Math.Random",
-    "TLML.Lang.Math.Max",
-    "TLML.Lang.Math.Min",
-    "TLML.Lang.Math.Round",
-    "TLML.Lang.Environment.GetTime",
-    "TLML.Lang.Environment.GetOSVersion",
-    "TLML.Lang.Environment.GetCurrentUser",
-    "TLML.Lang.StringUtil.Concat",
-    "TLML.Lang.StringUtil.Length",
-    "TLML.Lang.StringUtil.ToUpper",
-    "TLML.Lang.StringUtil.ToLower",
+    ...Object.keys(docs.standardLibs),
     "TLML.Lang.Console.Console.WriteLine",
     "TLML.Lang.Console.Console.Write",
     "TLML.Lang.Console.Console.ReadLine",
@@ -458,43 +436,7 @@ export class TlmlLanguageServer {
 
     // 2. Check if it's a directive
     if (word.startsWith(".")) {
-      const directiveDesc: Record<string, { title: string, desc: string, syntax: string }> = {
-        ".assembly": {
-          title: "Assembly Declaration Directive",
-          desc: "Defines the semantic name of the compiled assembly binary. This must be placed at the root level of your file.",
-          syntax: ".assembly <assembly_name>"
-        },
-        ".version": {
-          title: "Version Declaration Directive",
-          desc: "Specifies the semantic version of the output assembly module.",
-          syntax: ".version <major>.<minor>.<build>.<revision>"
-        },
-        ".import": {
-          title: "Import Directive",
-          desc: "Imports a dependency assembly library from GSOCC VFS (such as `TLML.Lang`) or registers a namespace mapping reference (`.import namespace Name`).",
-          syntax: ".import assembly <assembly_name>\n.import namespace <namespace_path>"
-        },
-        ".namespace": {
-          title: "Namespace Scope Directive",
-          desc: "Establishes a logical grouping namespace. Code inside a namespace block must be enclosed in curly brackets `{` and `}`.",
-          syntax: ".namespace <namespace_path> {\n  ...\n}"
-        },
-        ".class": {
-          title: "Class Definition Directive",
-          desc: "Defines a structured object class inside a namespace block. Classes can contain fields and executable methods.",
-          syntax: ".class [public|private] [static] <class_name> {\n  ...\n}"
-        },
-        ".method": {
-          title: "Method Definition Directive",
-          desc: "Declares an executable bytecode routine inside a class structure. Encloses stacked instructions and local labels.",
-          syntax: ".method [public|private] [static] <return_type> <method_name>(<params>) {\n  ...\n}"
-        },
-        ".field": {
-          title: "Field Declaration Directive",
-          desc: "Declares a class member field variable to store persistent state.",
-          syntax: ".field [public|private] [static] <type> <field_name>"
-        }
-      };
+      const directiveDesc = docs.directives as Record<string, { title: string, desc: string, syntax: string }>;
 
       const key = Object.keys(directiveDesc).find(d => word.startsWith(d));
       if (key) {
@@ -520,27 +462,7 @@ export class TlmlLanguageServer {
     }
 
     // 4. Standard library hover details
-    const standardLibs: Record<string, string> = {
-      "TLML.Lang.Console.WriteLine": "Writes a string or stack value to the standard output terminal, followed by a newline character.",
-      "TLML.Lang.Console.Write": "Writes a string or value directly to the output console without appending a newline.",
-      "TLML.Lang.Console.ReadLine": "Suspends execution and prompts the user for keyboard text input. Pushes the entered string onto the evaluation stack.",
-      "TLML.Lang.Console.Clear": "Clears all terminal lines and resets console buffers.",
-      "TLML.Lang.Console.Beep": "Generates a synthesized hardware beep alert sound via the Web Audio API.",
-      "TLML.Lang.Console.SetColor": "Sets the active output console text color. Supports HTML color strings (e.g. '#10b981').",
-      "TLML.Lang.Math.Sqrt": "Pops a number, computes its floating-point square root, and pushes the result onto the stack.",
-      "TLML.Lang.Math.Abs": "Pops a number and returns its absolute (positive) magnitude.",
-      "TLML.Lang.Math.Pow": "Pops exponent (y), pops base (x). Computes x raised to the power of y and pushes the result.",
-      "TLML.Lang.Math.Random": "Pushes a pseudo-random floating-point value between 0.0 and 1.0 onto the stack.",
-      "TLML.Lang.Math.Max": "Pops two numbers, evaluates which is larger, and pushes that number onto the stack.",
-      "TLML.Lang.Math.Min": "Pops two numbers, evaluates which is smaller, and pushes that number onto the stack.",
-      "TLML.Lang.Environment.GetTime": "Pushes a formatted string of the current machine local time onto the stack.",
-      "TLML.Lang.Environment.GetOSVersion": "Pushes the current environment kernel OS version string onto the stack.",
-      "TLML.Lang.Environment.GetCurrentUser": "Pushes the local shell active username ('tux') onto the stack.",
-      "TLML.Lang.StringUtil.Concat": "Pops two string values, concatenates them, and pushes the combined result.",
-      "TLML.Lang.StringUtil.Length": "Pops a string from the stack and pushes its total integer character count.",
-      "TLML.Lang.StringUtil.ToUpper": "Pops a string, converts all alphabetic characters to uppercase, and pushes it.",
-      "TLML.Lang.StringUtil.ToLower": "Pops a string, converts all alphabetic characters to lowercase, and pushes it."
-    };
+    const standardLibs = docs.standardLibs as Record<string, string>;
 
     if (standardLibs[word]) {
       return {
@@ -597,83 +519,102 @@ export class TlmlLanguageServer {
   getCompletions(code: string, lineIndex: number, colIndex: number, globalGsoc: any): TlmlCompletionItem[] {
     const lines = code.split("\n");
     const currentLine = lines[lineIndex] || "";
-    const trimmedLine = currentLine.trim();
+    const textBeforeCursor = currentLine.substring(0, colIndex);
+    const trimmedBeforeCursor = textBeforeCursor.trim();
 
     // Context analysis: What are we inside?
-    let currentNamespaceName = "";
-    let currentClassName = "";
-    let currentMethodName = "";
-    let currentMethodParams: string[] = [];
-    let currentClassFields: string[] = [];
+    interface ScopeState {
+      type: "ROOT" | "NAMESPACE" | "CLASS" | "METHOD";
+      name: string;
+      lineStart: number;
+      params?: string[];
+      fields?: string[];
+      methods?: string[];
+    }
 
-    let openBrackets = 0;
+    const scopeStack: ScopeState[] = [
+      { type: "ROOT", name: "", lineStart: 0 }
+    ];
+
     const namespaceRegex = /^\s*\.namespace\s+([\w\.]+)/i;
-    const classRegex = /^\s*\.class\s+(?:public|private|internal)?\s*(?:static)?\s*([\w\.]+)/i;
+    const classRegex = /^\s*\.class\s+(?:public|private|internal|protected)?\s*(?:static)?\s*([\w\.]+)/i;
     const methodRegex = /^\s*\.method\s+(?:public|private|protected|internal)?\s*(?:static)?\s*([\w\.]+)\s+([\w\.]+)\(([^)]*)\)/i;
     const fieldRegex = /^\s*\.field\s+(?:public|private|protected|internal)?\s*(?:static)?\s*([\w\.]+)\s+(\w+)/i;
 
+    let pendingScope: ScopeState | null = null;
+
     for (let i = 0; i < lineIndex; i++) {
-      const l = lines[i].trim();
-      if (!l || l.startsWith("//")) continue;
+      const line = lines[i];
+      const commentIdx = line.indexOf("//");
+      const cleanLine = commentIdx !== -1 ? line.substring(0, commentIdx) : line;
+      const trimmed = cleanLine.trim();
 
-      if (l.includes("{")) openBrackets++;
-      if (l.includes("}")) openBrackets--;
+      if (!trimmed) continue;
 
-      if (namespaceRegex.test(l)) {
-        const m = l.match(namespaceRegex);
-        if (m) currentNamespaceName = m[1];
-      } else if (classRegex.test(l)) {
-        const m = l.match(classRegex);
-        if (m) currentClassName = m[1];
-      } else if (methodRegex.test(l)) {
-        const m = l.match(methodRegex);
-        if (m) {
-          currentMethodName = m[2];
-          const rawParams = m[3];
-          currentMethodParams = rawParams ? rawParams.split(",").map(p => {
-            const parts = p.trim().split(/\s+/);
-            return parts[1] || "";
-          }).filter(p => p !== "") : [];
+      // Extract pending scopes
+      if (namespaceRegex.test(trimmed)) {
+        const match = trimmed.match(namespaceRegex);
+        if (match) {
+          pendingScope = { type: "NAMESPACE", name: match[1], lineStart: i };
         }
-      } else if (fieldRegex.test(l)) {
-        const m = l.match(fieldRegex);
-        if (m) {
-          currentClassFields.push(m[2]);
+      } else if (classRegex.test(trimmed)) {
+        const match = trimmed.match(classRegex);
+        if (match) {
+          pendingScope = { type: "CLASS", name: match[1], lineStart: i, fields: [], methods: [] };
+        }
+      } else if (methodRegex.test(trimmed)) {
+        const match = trimmed.match(methodRegex);
+        if (match) {
+          const rawParams = match[3];
+          const params = rawParams ? rawParams.split(",").map(p => {
+            const parts = p.trim().split(/\s+/);
+            return parts[parts.length - 1] || "";
+          }).filter(p => p !== "") : [];
+          pendingScope = { type: "METHOD", name: match[2], lineStart: i, params };
         }
       }
 
-      // If bracket closed completely, clear scope
-      if (openBrackets === 0) {
-        currentNamespaceName = "";
-        currentClassName = "";
-        currentMethodName = "";
-        currentMethodParams = [];
-        currentClassFields = [];
-      } else if (openBrackets === 1) {
-        currentClassName = "";
-        currentMethodName = "";
-        currentMethodParams = [];
-        currentClassFields = [];
-      } else if (openBrackets === 2) {
-        currentMethodName = "";
-        currentMethodParams = [];
+      // If we are in CLASS scope, track fields and methods dynamically
+      const activeClassScope = [...scopeStack].reverse().find(s => s.type === "CLASS");
+      if (activeClassScope) {
+        if (fieldRegex.test(trimmed)) {
+          const match = trimmed.match(fieldRegex);
+          if (match) {
+            activeClassScope.fields = activeClassScope.fields || [];
+            activeClassScope.fields.push(match[2]);
+          }
+        } else if (methodRegex.test(trimmed)) {
+          const match = trimmed.match(methodRegex);
+          if (match) {
+            activeClassScope.methods = activeClassScope.methods || [];
+            activeClassScope.methods.push(match[2]);
+          }
+        }
+      }
+
+      // Scan characters for curly braces to update stack
+      for (let char of cleanLine) {
+        if (char === "{") {
+          if (pendingScope) {
+            scopeStack.push(pendingScope);
+            pendingScope = null;
+          } else {
+            const top = scopeStack[scopeStack.length - 1];
+            scopeStack.push({ type: top.type, name: top.name, lineStart: i, params: top.params, fields: top.fields, methods: top.methods });
+          }
+        } else if (char === "}") {
+          if (scopeStack.length > 1) {
+            scopeStack.pop();
+          }
+        }
       }
     }
 
+    // Inspect the active scope at cursor line
+    const activeScope = scopeStack[scopeStack.length - 1];
     const items: TlmlCompletionItem[] = [];
 
-    // Helper to add instruction details
-    const addInstruction = (label: string, detail: string, doc: string) => {
-      items.push({
-        label,
-        kind: 13, // Keyword
-        insertText: label,
-        detail,
-        documentation: doc
-      });
-    };
-
-    // Load explicitly imported assemblies to local cache, or reuse cache
+    // Helper to load explicitly imported assemblies to local cache, or reuse cache
     const currentImports = this.getImportedAssemblies(code);
     const importsKey = currentImports.sort().join(",");
     
@@ -687,155 +628,138 @@ export class TlmlLanguageServer {
       TlmlLanguageServer.lastCodeImports = importsKey;
     }
 
-    // Case 1: Typing a call reference (e.g., inside method after `call `)
-    if (trimmedLine.startsWith("call")) {
-      // Complete standard library calls
-      const calls = [
-        { label: "TLML.Lang.Console.WriteLine", doc: "Writes line value to console output line buffer." },
-        { label: "TLML.Lang.Console.Write", doc: "Writes character or string value to console output line buffer." },
-        { label: "TLML.Lang.Console.ReadLine", doc: "Pauses stack VM to receive string value from standard input line." },
-        { label: "TLML.Lang.Console.Clear", doc: "Clears diagnostics panel outputs." },
-        { label: "TLML.Lang.Console.Beep", doc: "Synthesizes standard tone chime." },
-        { label: "TLML.Lang.Console.SetColor", doc: "Sets console output text color (e.g. 'green', 'yellow')." },
-        { label: "TLML.Lang.Math.Sqrt", doc: "Calculates the square root of popped stack value." },
-        { label: "TLML.Lang.Math.Abs", doc: "Returns the absolute magnitude of popped stack value." },
-        { label: "TLML.Lang.Math.Pow", doc: "Raises base to exponent (pops exponent first, then base)." },
-        { label: "TLML.Lang.Math.Random", doc: "Pushes double value between 0.0 and 1.0 onto virtual stack." },
-        { label: "TLML.Lang.Math.Max", doc: "Compares two popped values, pushing the higher one." },
-        { label: "TLML.Lang.Math.Min", doc: "Compares two popped values, pushing the lower one." },
-        { label: "TLML.Lang.Math.Round", doc: "Rounds popped float or double to nearest integer." },
-        { label: "TLML.Lang.Environment.GetTime", doc: "Pushes current Unix Epoch millisecond timestamp." },
-        { label: "TLML.Lang.Environment.GetOSVersion", doc: "Pushes operating system version string." },
-        { label: "TLML.Lang.Environment.GetCurrentUser", doc: "Pushes active logged-in user name string." },
-        { label: "TLML.Lang.StringUtil.Concat", doc: "Concatenates two popped string elements." },
-        { label: "TLML.Lang.StringUtil.Length", doc: "Pushes length integer of popped string element." },
-        { label: "TLML.Lang.StringUtil.ToUpper", doc: "Converts popped string to uppercase form." },
-        { label: "TLML.Lang.StringUtil.ToLower", doc: "Converts popped string to lowercase form." }
-      ];
+    // --- CASE 1: INSIDE METHOD SCOPE ---
+    if (activeScope.type === "METHOD") {
+      const activeClass = [...scopeStack].reverse().find(s => s.type === "CLASS");
 
-      // Add standard calls
-      calls.forEach(c => {
-        items.push({
-          label: c.label,
-          kind: 1, // Method
-          insertText: c.label,
-          detail: "System Library Call",
-          documentation: c.doc
-        });
-      });
-
-      // Add local class methods defined in this file
-      lines.forEach(l => {
-        const mMatch = l.match(methodRegex);
-        if (mMatch) {
-          const mName = mMatch[2];
+      // 1A. Call method completions
+      if (trimmedBeforeCursor.match(/\bcall\s+[\w.:\-]*$/i)) {
+        // System Library calls
+        const systemCalls = docs.completions as { label: string, doc: string }[];
+        systemCalls.forEach(c => {
           items.push({
-            label: mName,
-            kind: 2, // Function
-            insertText: mName,
-            detail: "Local Method Call",
-            documentation: `Invoke local method '${mName}' defined in class.`
+            label: c.label,
+            kind: 1, // Method
+            insertText: c.label,
+            detail: "System Library Call",
+            documentation: c.doc
+          });
+        });
+
+        // Local methods in same class
+        if (activeClass && activeClass.methods) {
+          activeClass.methods.forEach(m => {
+            items.push({
+              label: m,
+              kind: 2, // Function / Local Method
+              insertText: m,
+              detail: "Local Method Call",
+              documentation: `Invoke local method '${m}' defined in active class.`
+            });
           });
         }
-      });
 
-      // Add dynamic assemblies methods from cache
-      Object.keys(TlmlLanguageServer.assemblyCache).forEach(asmName => {
-        const asm = TlmlLanguageServer.assemblyCache[asmName];
-        if (asm && asm.namespaces) {
-          asm.namespaces.forEach((ns: any) => {
-            if (ns.types) {
-              ns.types.forEach((t: any) => {
-                if (t.methods) {
-                  t.methods.forEach((m: any) => {
-                    const fullName = `${t.fullName}.${m.name}`;
-                    items.push({
-                      label: fullName,
-                      kind: 1,
-                      insertText: fullName,
-                      detail: `Assembly ${asmName}`,
-                      documentation: `Call referenced assembly method '${fullName}'`
+        // External GSOCC assemblies methods
+        Object.keys(TlmlLanguageServer.assemblyCache).forEach(asmName => {
+          const asm = TlmlLanguageServer.assemblyCache[asmName];
+          if (asm && asm.namespaces) {
+            asm.namespaces.forEach((ns: any) => {
+              if (ns.types) {
+                ns.types.forEach((t: any) => {
+                  if (t.methods) {
+                    t.methods.forEach((m: any) => {
+                      const fullName = `${t.fullName}.${m.name}`;
+                      items.push({
+                        label: fullName,
+                        kind: 1,
+                        insertText: fullName,
+                        detail: `Assembly ${asmName}`,
+                        documentation: `Call referenced assembly method '${fullName}'`
+                      });
                     });
-                  });
-                }
-              });
-            }
+                  }
+                });
+              }
+            });
+          }
+        });
+
+        return items;
+      }
+
+      // 1B. Class fields completions (push.field / store.field)
+      if (trimmedBeforeCursor.match(/\b(push\.field|store\.field)\s+[\w.:\-]*$/i)) {
+        if (activeClass && activeClass.fields) {
+          activeClass.fields.forEach(f => {
+            items.push({
+              label: f,
+              kind: 4, // Field
+              insertText: f,
+              detail: "Class Member Field",
+              documentation: `Active class member field variable '${f}'`
+            });
           });
         }
-      });
-
-      return items;
-    }
-
-    // Case for fields completion (e.g. push.field, store.field)
-    if (trimmedLine.startsWith("push.field") || trimmedLine.startsWith("store.field")) {
-      currentClassFields.forEach(f => {
-        items.push({
-          label: f,
-          kind: 4, // Field
-          insertText: f,
-          detail: "Class Field",
-          documentation: `Class member field variable '${f}'`
-        });
-      });
-      return items;
-    }
-
-    // Case for local jump label completions (e.g. jump, jump.false)
-    if (trimmedLine.startsWith("jump") || trimmedLine.startsWith("jump.false")) {
-      const labels: string[] = [];
-      lines.forEach(l => {
-        const commentIdx = l.indexOf("//");
-        const cleanL = commentIdx !== -1 ? l.substring(0, commentIdx) : l;
-        const trimmed = cleanL.trim();
-        if (trimmed.startsWith(":")) {
-          labels.push(trimmed);
-        }
-      });
-      labels.forEach(lbl => {
-        items.push({
-          label: lbl,
-          kind: 5, // Variable / Label
-          insertText: lbl,
-          detail: "Local Jump Label",
-          documentation: `Jump to offset marked by label '${lbl}'`
-        });
-      });
-      return items;
-    }
-
-    // Case 2: Inside a method and requesting arguments / parameters (e.g. `push.arg ` or `store.arg `)
-    if (trimmedLine.startsWith("push.arg") || trimmedLine.startsWith("store.arg")) {
-      currentMethodParams.forEach(p => {
-        items.push({
-          label: p,
-          kind: 5, // Variable
-          insertText: p,
-          detail: "Method Parameter",
-          documentation: `Method argument variable '${p}'`
-        });
-      });
-      return items;
-    }
-
-    // Case 3: Inside a method and requesting local registers (e.g. `push.local ` or `store.local `)
-    if (trimmedLine.startsWith("push.local") || trimmedLine.startsWith("store.local")) {
-      // Offer generic local slot options
-      for (let i = 0; i < 5; i++) {
-        items.push({
-          label: String(i),
-          kind: 5, // Variable
-          insertText: String(i),
-          detail: `Local Variable Register [${i}]`,
-          documentation: `Stack frame virtual local register slot ${i}.`
-        });
+        return items;
       }
-      return items;
-    }
 
-    // Case 4: Inside a method body
-    if (currentMethodName !== "") {
-      // Load instructions into cache if not present
+      // 1C. Method parameters completions (push.arg / store.arg)
+      if (trimmedBeforeCursor.match(/\b(push\.arg|store\.arg)\s+[\w.:\-]*$/i)) {
+        if (activeScope.params) {
+          activeScope.params.forEach(p => {
+            items.push({
+              label: p,
+              kind: 5, // Variable
+              insertText: p,
+              detail: "Method Argument",
+              documentation: `Method input parameter variable '${p}'`
+            });
+          });
+        }
+        return items;
+      }
+
+      // 1D. Local registers slots completions (push.local / store.local)
+      if (trimmedBeforeCursor.match(/\b(push\.local|store\.local)\s+[\w.:\-]*$/i)) {
+        for (let i = 0; i < 5; i++) {
+          items.push({
+            label: String(i),
+            kind: 5, // Variable
+            insertText: String(i),
+            detail: `Local Register Slot [${i}]`,
+            documentation: `Stack frame virtual local register slot ${i}.`
+          });
+        }
+        return items;
+      }
+
+      // 1E. Jump Labels completions (jump / jump.true / jump.false)
+      if (trimmedBeforeCursor.match(/\b(jump|jump\.false|jump\.true)\s+[\w.:\-]*$/i)) {
+        // Scan current method lines for labels starting with ":"
+        const labels: string[] = [];
+        const startLine = activeScope.lineStart;
+        for (let idx = startLine; idx <= lineIndex; idx++) {
+          const l = (lines[idx] || "").trim();
+          if (l.startsWith(":")) {
+            const commentPart = l.indexOf("//");
+            const cleanLabel = commentPart !== -1 ? l.substring(0, commentPart).trim() : l;
+            labels.push(cleanLabel);
+          }
+        }
+
+        labels.forEach(lbl => {
+          items.push({
+            label: lbl,
+            kind: 5, // Variable / Label
+            insertText: lbl,
+            detail: "Local Jump Label",
+            documentation: `Jump execution to label offset '${lbl}'`
+          });
+        });
+        return items;
+      }
+
+      // 1F. Default: Bytecode Instructions
       if (!TlmlLanguageServer.instructionCache) {
         TlmlLanguageServer.instructionCache = TlmlInstructionRegistry.getInstance().getAll().map(inst => ({
           label: inst.name,
@@ -847,68 +771,126 @@ export class TlmlLanguageServer {
       }
       
       items.push(...TlmlLanguageServer.instructionCache);
+      
+      // Add local label snippet
+      items.push({
+        label: ":label",
+        kind: 25, // Snippet
+        insertText: ":${1:label_name}",
+        detail: "Define local jump label",
+        documentation: "Define a jump offset label target."
+      });
+
       return items;
     }
 
-    // Case 5: Inside class body
-    if (currentClassName !== "") {
+    // --- CASE 2: INSIDE CLASS SCOPE ---
+    if (activeScope.type === "CLASS") {
       items.push({
-        label: ".method",
-        kind: 13,
-        insertText: ".method public static void Main()\n{\n    ret\n}",
-        detail: "Method declaration snippet",
-        documentation: "Declare a new compiled method instruction stream."
+        label: ".method static",
+        kind: 25, // Snippet
+        insertText: ".method public static void ${1:Main}(${2:string arg})\n{\n    $0\n}",
+        detail: "Static method declaration block",
+        documentation: "Declare a new compiled static method routine."
       });
       items.push({
-        label: ".field",
-        kind: 13,
-        insertText: ".field private int myField",
-        detail: "Field declaration snippet"
+        label: ".method instance",
+        kind: 25, // Snippet
+        insertText: ".method public void ${1:MyMethod}()\n{\n    $0\n    ret\n}",
+        detail: "Instance method declaration block",
+        documentation: "Declare an instance member method."
+      });
+      items.push({
+        label: ".field private",
+        kind: 25, // Snippet
+        insertText: ".field private ${1:int} ${2:myField}",
+        detail: "Private field declaration",
+        documentation: "Declare a private object member state field."
+      });
+      items.push({
+        label: ".field public",
+        kind: 25, // Snippet
+        insertText: ".field public ${1:string} ${2:myField}",
+        detail: "Public field declaration",
+        documentation: "Declare a public member state field."
+      });
+      items.push({
+        label: ".property",
+        kind: 25, // Snippet
+        insertText: ".property public ${1:int} ${2:MyProperty}",
+        detail: "Property declaration snippet",
+        documentation: "Declare a managed public getter/setter property."
+      });
+
+      // Also suggest data types for declaring fields/methods
+      const types = docs.types as string[];
+      types.forEach(t => {
+        items.push({
+          label: t,
+          kind: 13, // Keyword
+          insertText: t,
+          detail: "TLML Value/Reference Type",
+          documentation: `Standard type reference for '${t}'.`
+        });
+      });
+
+      return items;
+    }
+
+    // --- CASE 3: INSIDE NAMESPACE SCOPE ---
+    if (activeScope.type === "NAMESPACE") {
+      items.push({
+        label: ".class public",
+        kind: 25, // Snippet
+        insertText: ".class public ${1:Program}\n{\n    $0\n}",
+        detail: "Public Class declaration snippet",
+        documentation: "Declare a public object class block."
+      });
+      items.push({
+        label: ".class private",
+        kind: 25, // Snippet
+        insertText: ".class private ${1:Helper}\n{\n    $0\n}",
+        detail: "Private Class declaration snippet",
+        documentation: "Declare a private container class."
       });
       return items;
     }
 
-    // Case 6: Inside namespace body
-    if (currentNamespaceName !== "") {
-      items.push({
-        label: ".class",
-        kind: 13,
-        insertText: ".class public Program\n{\n    \n}",
-        detail: "Class structure block declaration"
-      });
-      return items;
-    }
-
-    // Case 7: Outside any scope (assembly definitions)
+    // --- CASE 4: ROOT SCOPE ---
     items.push({
       label: ".assembly",
-      kind: 13,
-      insertText: ".assembly MyCompiledCode",
-      detail: "Define current assembly output name."
+      kind: 25,
+      insertText: ".assembly ${1:MyCompiledCode}",
+      detail: "Define assembly name",
+      documentation: "Define the logical name of the generated assembly output."
     });
     items.push({
       label: ".version",
-      kind: 13,
-      insertText: ".version 1.0.0.0",
-      detail: "Define assembly semantic version."
+      kind: 25,
+      insertText: ".version ${1:1.0.0.0}",
+      detail: "Define assembly version",
+      documentation: "Define the semantic binary assembly version."
     });
     items.push({
       label: ".import assembly",
-      kind: 13,
-      insertText: ".import assembly TLML.Lang",
-      detail: "Import dependency assembly library from GSOCC cache."
+      kind: 25,
+      insertText: ".import assembly ${1:TLML.Lang}",
+      detail: "Import binary GSOCC dependency",
+      documentation: "Import a compiled .soc library assembly from system storage."
     });
     items.push({
       label: ".import namespace",
-      kind: 13,
-      insertText: ".import namespace TLML.Lang.Console",
-      detail: "Import namespace path mappings helper."
+      kind: 25,
+      insertText: ".import namespace ${1:TLML.Lang.Console}",
+      detail: "Import namespace mapping",
+      documentation: "Add namespace mapping references for compiler lookup shortcutting."
     });
     items.push({
       label: ".namespace",
-      kind: 13,
-      insertText: ".namespace MyCustomApp\n{\n    \n}",
-      detail: "Declare workspace container namespace scope."
+      kind: 25,
+      insertText: ".namespace ${1:MyCustomApp}\n{\n    $0\n}",
+      detail: "Declare Namespace block",
+      documentation: "Declare a standard organizational namespace block scope."
     });
 
     return items;

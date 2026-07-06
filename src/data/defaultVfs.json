@@ -1,0 +1,96 @@
+{
+  "name": "/",
+  "type": "DIRECTORY",
+  "createdAt": 1716964307000,
+  "children": {
+    "bin": {
+      "name": "bin",
+      "type": "DIRECTORY",
+      "createdAt": 1716964307000,
+      "children": {
+        "sh": { "name": "sh", "type": "FILE", "createdAt": 1716964307000, "content": "#!/bin/sh\nEcho 'Retro Shell v1.0'" },
+        "systemctl": { "name": "systemctl", "type": "FILE", "createdAt": 1716964307000, "content": "#!/bin/systemctl" },
+        "neofetch": { "name": "neofetch", "type": "FILE", "createdAt": 1716964307000, "content": "# neofetch config" }
+      }
+    },
+    "etc": {
+      "name": "etc",
+      "type": "DIRECTORY",
+      "createdAt": 1716964307000,
+      "children": {
+        "hostname": { "name": "hostname", "type": "FILE", "createdAt": 1716964307000, "content": "trashlinux-beast" },
+        "issue": { "name": "issue", "type": "FILE", "createdAt": 1716964307000, "content": "TrashLinux 0.04a (stable build) \\n \\l\n\n" },
+        "sysconfig.json": {
+          "name": "sysconfig.json",
+          "type": "FILE",
+          "createdAt": 1716964307000,
+          "content": "{\n  \"hostname\": \"trashlinux-beast\",\n  \"dns_primary\": \"1.1.1.1\",\n  \"networking_enabled\": true,\n  \"system_sound\": false,\n  \"wallpaper_style\": \"Solid Slate\",\n  \"custom_wallpaper_color_1\": \"#1b1e20\",\n  \"custom_wallpaper_color_2\": \"#2d3235\",\n  \"syslog_verbosity\": \"DEBUG\",\n  \"allow_regular_user_system_writes\": true,\n  \"restrict_process_kill\": false,\n  \"allow_guest_terminal\": true,\n  \"simulated_cpu_threads\": 1,\n  \"show_welcome_tip\": true,\n  \"system_locked\": false,\n  \"kernel_panic_on_missing_sysconfig\": true,\n  \"kernel_panic_flag\": false\n}"
+        },
+        "users.json": {
+          "name": "users.json",
+          "type": "FILE",
+          "createdAt": 1716964307000,
+          "content": "[\n  { \"username\": \"root\", \"passwordHash\": \"root\", \"role\": \"root\", \"fullName\": \"Root Administrator\", \"avatar\": \"system\" },\n  { \"username\": \"tux\", \"passwordHash\": \"tux\", \"role\": \"admin\", \"fullName\": \"Tux Hackerman\", \"avatar\": \"penguin\" },\n  { \"username\": \"guest\", \"passwordHash\": \"\", \"role\": \"user\", \"fullName\": \"Default Trash Guest\", \"avatar\": \"guest\" }\n]"
+        },
+        "motd": {
+          "name": "motd",
+          "type": "FILE",
+          "createdAt": 1716964307000,
+          "content": "=====================================================\nWelcome to TrashLinux (0.04a-stable Build 42)\nThe absolute clunkiest, rawest, but most powerful hacking system.\nArmed with Process Spawning and Kernel Panic switches!\n\n* Secure Sandboxed Kernel: SEVERE THREAT LEVEL\n* Background Daemon Engine (systemctl manager): ACTIVE\n* In-Memory VFS with Local Persistent IndexedDB: STABLE\n* Direct Process Signals Hooked: PID SUSPEND / SIGKILL\n\nRun 'help' to see advanced system commands.\nLog in as 'root' for total CPU world domination.\n====================================================="
+        },
+        "resolv.conf": { "name": "resolv.conf", "type": "FILE", "createdAt": 1716964307000, "content": "nameserver 1.1.1.1\nnameserver 8.8.8.8" },
+        "bootaid.json": {
+          "name": "bootaid.json",
+          "type": "FILE",
+          "createdAt": 1716964307000,
+          "content": "{\n  \"default\": \"createSecureKernel\",\n  \"kernels\": [\n    { \"id\": \"secure\", \"name\": \"Standard Secure Kernel\", \"entry\": \"createSecureKernel\", \"version\": \"2.6.15-26\" }\n  ]\n}"
+        },
+        "customAppRegistry.json": {
+          "name": "customAppRegistry.json",
+          "type": "FILE",
+          "createdAt": 1716964307000,
+          "content": "[\n  { \"id\": \"desktopEnv\", \"name\": \"Desktop Environment\", \"description\": \"Core window supervisor, start panels, shortcuts, and global skeuomorphic context managers\", \"version\": \"1.0.0\", \"dependencies\": [\"Kernel\", \"syslog.service\"], \"author\": \"TrashLinux Core Development Group\" },\n  { \"id\": \"terminalUF\", \"name\": \"Command Terminal\", \"description\": \"Terminal shell with standard command emulation, process spawners, and local environment bindings\", \"version\": \"1.0.0\", \"dependencies\": [\"VFS\"], \"author\": \"GNU Terminal Project\" },\n  { \"id\": \"fileManagerUF\", \"name\": \"File Explorer\", \"description\": \"File tree navigation suite and visual disk explorer\", \"version\": \"1.0.0\", \"dependencies\": [\"VFS\"], \"author\": \"Nautilus File Manager Group\" },\n  { \"id\": \"leafpadUF\", \"name\": \"Text Editor\", \"description\": \"Lightweight, distraction-free document writer and editor\", \"version\": \"1.0.0\", \"dependencies\": [\"VFS\"], \"author\": \"LXDE Group\" },\n  { \"id\": \"systemMonitorUFD\", \"name\": \"System Monitor\", \"description\": \"Process monitor, daemon service status manager, and threat control console\", \"version\": \"1.0.0\", \"dependencies\": [\"Kernel\"], \"author\": \"Sysinternals Logging Division\" },\n  { \"id\": \"minesweeperUF\", \"name\": \"Minesweeper Game\", \"description\": \"Classic retro logic puzzle board game with customizable grids\", \"version\": \"1.0.0\", \"dependencies\": [], \"author\": \"Retro Classics Inc\" },\n  { \"id\": \"surferUF\", \"name\": \"Web Browser\", \"description\": \"Text-based HTML visualizer and DNS lookup client\", \"version\": \"1.0.0\", \"dependencies\": [\"syslog.service\"], \"author\": \"CERN Hackers Group\" },\n  { \"id\": \"controlPanelUFD\", \"name\": \"System Settings\", \"description\": \"Users account administrator and general configuration flags setup\", \"version\": \"1.0.0\", \"dependencies\": [\"Kernel\"], \"author\": \"TrashLinux Admin Foundation\" },\n  { \"id\": \"themeManagerUF\", \"name\": \"Theme Configurator\", \"description\": \"Visual customizer for skeuomorphic borders, solid/gradient desktop wallpapers, custom CSS code injections, and system-wide CSS selectors rules engine\", \"version\": \"1.0.0\", \"dependencies\": [\"VFS\"], \"author\": \"XFCE Customization Labs\" },\n  { \"id\": \"imageViewerUF\", \"name\": \"Image Viewer\", \"description\": \"A fast layout graphic browser supporting simple images and canvas pixels\", \"version\": \"1.0.0\", \"dependencies\": [\"VFS\"], \"author\": \"GNOME Media Developers\" },\n  { \"id\": \"videoPlayerUF\", \"name\": \"Video Player\", \"description\": \"Visual stream media window rendering offline files and logs\", \"version\": \"1.0.0\", \"dependencies\": [\"VFS\"], \"author\": \"VideoLAN Team\" },\n  { \"id\": \"musicPlayerUF\", \"name\": \"Music Player\", \"description\": \"Audio playlist utility to play music streams and tracks in retro skins\", \"version\": \"1.0.0\", \"dependencies\": [\"VFS\"], \"author\": \"XMMS Music Player Group\" },\n  { \"id\": \"appRegistryUF\", \"name\": \"App Registry Manager\", \"description\": \"Administrative console to dynamic app registry configurations, dependencies, authors, and version bumps\", \"version\": \"1.0.0\", \"dependencies\": [\"VFS\"], \"author\": \"System Registry Software Foundation\" },\n  { \"id\": \"assemblyInspectorUF\", \"name\": \"Assembly Inspector\", \"description\": \"ILSpy style decompiler and assembly object metadata tree browser for .soc library files\", \"version\": \"1.0.0\", \"dependencies\": [\"VFS\"], \"author\": \"GSOCC Development Labs\" },\n  { \"id\": \"tlmlIdeUF\", \"name\": \"TLML IDE\", \"description\": \"Advanced Integrated Development Environment for TLML assembly program compiling, AutoCommit IntelliSense, and instruction debugging.\", \"version\": \"1.0.0\", \"dependencies\": [\"VFS\"], \"author\": \"GSOCC Development Labs\", \"icon\": \"terminal\" }\n]"
+        }
+      }
+    },
+    "home": {
+      "name": "home",
+      "type": "DIRECTORY",
+      "createdAt": 1716964307000,
+      "children": {
+        "tux": {
+          "name": "tux",
+          "type": "DIRECTORY",
+          "createdAt": 1716964307000,
+          "children": {
+            "Desktop": {
+              "name": "Desktop",
+              "type": "DIRECTORY",
+              "createdAt": 1716964307000,
+              "children": {
+                "Welcome.txt": { "name": "Welcome.txt", "type": "FILE", "createdAt": 1716964307000, "content": "Welcome to TrashLinux v0.04a-stable!" },
+                "Leafpad.desktop": { "name": "Leafpad.desktop", "type": "FILE", "createdAt": 1716964307000, "content": "Exec=leafpad" },
+                "Minesweeper.desktop": { "name": "Minesweeper.desktop", "type": "FILE", "createdAt": 1716964307000, "content": "Exec=minesweeper" },
+                "ThemeConfigurator.desktop": { "name": "ThemeConfigurator.desktop", "type": "FILE", "createdAt": 1716964307000, "content": "Exec=themeManager\nIcon=palette" },
+                "AssemblyInspector.desktop": { "name": "AssemblyInspector.desktop", "type": "FILE", "createdAt": 1716964307000, "content": "Exec=assemblyInspector\nIcon=file-search" },
+                "TLML_IDE.desktop": { "name": "TLML_IDE.desktop", "type": "FILE", "createdAt": 1716964307000, "content": "Exec=tlmlIde\nIcon=terminal" }
+              }
+            },
+            "Documents": {
+              "name": "Documents",
+              "type": "DIRECTORY",
+              "createdAt": 1716964307000,
+              "children": {
+                "Assemblies": { "name": "Assemblies", "type": "DIRECTORY", "createdAt": 1716964307000, "children": {} },
+                "kernel_security.txt": { "name": "kernel_security.txt", "type": "FILE", "createdAt": 1716964307000, "content": "Kernel security info..." },
+                "todo.txt": { "name": "todo.txt", "type": "FILE", "createdAt": 1716964307000, "content": "Todo list..." }
+              }
+            }
+          }
+        }
+      }
+    },
+    "var": { "name": "var", "type": "DIRECTORY", "createdAt": 1716964307000, "children": { "log": { "name": "log", "type": "DIRECTORY", "createdAt": 1716964307000, "children": { "syslog": { "name": "syslog", "type": "FILE", "createdAt": 1716964307000, "content": "System logs..." } } } } },
+    "proc": { "name": "proc", "type": "DIRECTORY", "createdAt": 1716964307000, "children": { "version": { "name": "version", "type": "FILE", "createdAt": 1716964307000, "content": "Linux version 2.6.15-26-386" }, "cpuinfo": { "name": "cpuinfo", "type": "FILE", "createdAt": 1716964307000, "content": "CPU info..." }, "meminfo": { "name": "meminfo", "type": "FILE", "createdAt": 1716964307000, "content": "Mem info..." } } }
+  }
+}

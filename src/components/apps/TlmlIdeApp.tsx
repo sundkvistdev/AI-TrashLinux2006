@@ -39,6 +39,8 @@ import { NodeType, VFSNode } from "../../types/os";
 import { ISocAssembly, ISocNamespace, ISocType, ISocMethod, TypeKind } from "../../types/soc";
 import { compileTLML, TlmlLanguageServer } from "../../kernel/tlmlCompiler";
 import { TlmlInstructionRegistry } from "../../kernel/instructionRegistry";
+import { initGsocCache } from "../../kernel/gsocc";
+import uiStrings from "../../data/uiStrings.json";
 
 interface TlmlIdeAppProps {
   syscall: any;
@@ -341,7 +343,7 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
       return;
     }
     const timer = setTimeout(() => {
-      const globalGsoc = (window as any).GSOCC;
+      const globalGsoc = (window as any).GSOCC || initGsocCache();
       const langServer = new TlmlLanguageServer();
       const errors = langServer.lint(activeContent, globalGsoc);
       setCompilerErrors(errors);
@@ -461,7 +463,7 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
         const fullWord = lineContent.substring(start, end).trim();
         if (!fullWord) return null;
 
-        const globalGsoc = (window as any).GSOCC;
+        const globalGsoc = (window as any).GSOCC || initGsocCache();
         const langServer = new TlmlLanguageServer();
         const hoverResult = langServer.getHover(model.getValue(), position.lineNumber, position.column, fullWord, globalGsoc);
 
@@ -506,7 +508,7 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
           endColumn: position.column
         };
 
-        const globalGsoc = (window as any).GSOCC;
+        const globalGsoc = (window as any).GSOCC || initGsocCache();
         const langServer = new TlmlLanguageServer();
         const serverCompletions = langServer.getCompletions(
           model.getValue(),
@@ -535,7 +537,7 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
       if (!activeFilePath) return;
       syscall.writeFile(activeFilePath, activeContent);
       setFiles(prev => prev.map(f => f.path === activeFilePath ? { ...f, content: activeContent } : f));
-      setAutoCommitTip("Saved successfully. File content committed to sandbox VFS storage.");
+      setAutoCommitTip(uiStrings.TlmlIdeApp.saveSuccess);
     } catch (e) {
       console.error("Failed to save file", e);
     }
@@ -543,7 +545,7 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
 
   // Compile TLML assembly parser using Centralized Compiler
   const runCompile = () => {
-    const globalGsoc = (window as any).GSOCC;
+    const globalGsoc = (window as any).GSOCC || initGsocCache();
     const { assembly: newAsm, errors } = compileTLML(activeContent, globalGsoc);
 
     updateEditorMarkers(errors);
@@ -551,7 +553,7 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
     if (errors.length > 0) {
       setCompilerErrors(errors);
       setBuildSuccess(false);
-      setAutoCommitTip("Compilation failed. Correct the highlighted descriptive errors in the Diagnostics Console.");
+      setAutoCommitTip(uiStrings.TlmlIdeApp.compileFailed);
     } else if (newAsm) {
       setCompilerErrors([]);
       setBuildSuccess(true);
@@ -575,7 +577,7 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
         console.error("VFS Compiled saving failed", e);
       }
 
-      setAutoCommitTip("Build succeeded! Assembly output written to `/sys/lib/" + newAsm.name + ".soc` and registered in GSOCC successfully.");
+      setAutoCommitTip(uiStrings.TlmlIdeApp.buildSuccess);
     }
     return;
 

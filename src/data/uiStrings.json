@@ -1,0 +1,7 @@
+{
+  "TlmlIdeApp": {
+    "saveSuccess": "Saved successfully. File content committed to sandbox VFS storage.",
+    "compileFailed": "Compilation failed. Correct the highlighted descriptive errors in the Diagnostics Console.",
+    "buildSuccess": "Build succeeded! Assembly output written to `/sys/lib/` and registered in GSOCC successfully."
+  }
+}
