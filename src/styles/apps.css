@@ -95,3 +95,725 @@
 input, select, textarea {
   border-radius: 4px !important;
 }
+
+/* -------------------------------------------------------------------------- */
+/* REFLEXIVE & REUSABLE TLNX-TLML-IDE DESIGN FRAMEWORK                         */
+/* -------------------------------------------------------------------------- */
+
+.tlnx-tlml-ide {
+  --ide-bg: #f3f4f6;
+  --ide-text: #1e293b;
+  --toolbar-bg: #1e293b;
+  --sidebar-bg: #e5e7eb;
+  --border-color: #cbd5e1;
+  
+  width: 100%;
+  height: 100%;
+  background-color: var(--ide-bg);
+  color: var(--ide-text);
+  display: flex;
+  flex-direction: column;
+  font-family: "Tahoma", "Verdana", sans-serif;
+  font-size: 0.75rem; /* 12px = 0.75rem */
+  
+  /* Top Main Toolbar */
+  & > .tlnx-ide-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--toolbar-bg);
+    color: #ffffff;
+    padding: 0.5rem;
+    border-bottom: 1px solid #0f172a;
+    
+    & > .tlnx-ide-toolbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      
+      & > span.tlnx-brand-title {
+        font-weight: 700;
+        font-size: 0.875rem;
+        letter-spacing: -0.025em;
+      }
+      
+      & > span.tlnx-brand-badge {
+        background-color: #334155;
+        font-size: 0.625rem;
+        color: #6ee7b7;
+        padding: 0.125rem 0.5rem;
+        border-radius: 0.25rem;
+        font-family: "Courier New", monospace;
+      }
+    }
+    
+    & > .tlnx-ide-toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      
+      & > .tlnx-btn-save {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem;
+        background-color: #334155;
+        color: #ffffff;
+        border: 1px solid #475569;
+        border-radius: 0.25rem;
+        font-weight: 500;
+        transition: all 0.15s ease-in-out;
+        
+        &:hover {
+          background-color: #475569;
+          border-color: #34d399;
+        }
+      }
+      
+      & > .tlnx-btn-compile {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem;
+        background-color: #10b981;
+        color: #ffffff;
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
+        font-weight: 500;
+        transition: all 0.15s ease-in-out;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        
+        &:hover {
+          background-color: #059669;
+        }
+      }
+      
+      & > .tlnx-btn-debug {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem;
+        background-color: #0ea5e9;
+        color: #ffffff;
+        border: 1px solid transparent;
+        border-radius: 0.25rem;
+        font-weight: 500;
+        transition: all 0.15s ease-in-out;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        
+        &:hover {
+          background-color: #0284c7;
+        }
+      }
+    }
+  }
+
+  /* Main Workspace Frame */
+  & > .tlnx-ide-workspace {
+    flex: 1 1 0%;
+    display: flex;
+    overflow: hidden;
+    
+    /* Left Sidebar: File Explorer & Assembly list */
+    & > .tlnx-ide-sidebar {
+      width: 14rem; /* 224px */
+      background-color: var(--sidebar-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      
+      & > .tlnx-sidebar-header {
+        padding: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #d1d5db;
+        
+        & > span {
+          font-weight: 600;
+          color: #374151;
+          display: flex;
+          align-items: center;
+          gap: 0.375rem;
+        }
+        
+        & > button {
+          padding: 0.25rem;
+          border-radius: 0.25rem;
+          transition: background-color 0.15s;
+          
+          &:hover {
+            background-color: #cbd5e1;
+          }
+        }
+      }
+      
+      & > .tlnx-new-file-box {
+        padding: 0.5rem;
+        background-color: #d1d5db;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 0.375rem;
+        
+        & > input {
+          width: 100%;
+          padding: 0.25rem;
+          background-color: #ffffff;
+          border: 1px solid #94a3b8;
+          border-radius: 0.25rem;
+          font-family: "Courier New", monospace;
+          font-size: 0.6875rem;
+          
+          &:focus {
+            outline: none;
+          }
+        }
+        
+        & > .tlnx-new-file-actions {
+          display: flex;
+          gap: 0.25rem;
+          
+          & > button {
+            flex: 1 1 0%;
+            padding: 0.125rem 0;
+            border-radius: 0.25rem;
+            font-size: 0.625rem;
+            color: #ffffff;
+            
+            &.tlnx-btn-create {
+              background-color: #059669;
+              &:hover { background-color: #047857; }
+            }
+            &.tlnx-btn-cancel {
+              background-color: #64748b;
+              &:hover { background-color: #475569; }
+            }
+          }
+        }
+      }
+      
+      & > .tlnx-files-list {
+        flex: 1 1 0%;
+        padding: 0.375rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        
+        & > .tlnx-file-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 0.375rem 0.5rem;
+          border-radius: 0.25rem;
+          cursor: pointer;
+          transition: background-color 0.15s;
+          color: #334155;
+          
+          &.tlnx-active {
+            background-color: #1e293b;
+            color: #ffffff;
+          }
+          
+          &:hover:not(.tlnx-active) {
+            background-color: #d1d5db;
+          }
+          
+          & > span {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            
+            & > span {
+              font-family: "Courier New", monospace;
+              font-size: 0.6875rem;
+            }
+          }
+          
+          & > button {
+            opacity: 0;
+            padding: 0.125rem;
+            border-radius: 0.25rem;
+            color: #dc2626;
+            transition: opacity 0.15s, background-color 0.15s;
+            
+            &:hover {
+              background-color: #cbd5e1;
+            }
+          }
+          
+          &:hover > button {
+            opacity: 1;
+          }
+        }
+      }
+      
+      & > .tlnx-libs-section {
+        & > .tlnx-libs-header {
+          padding: 0.5rem;
+          border-top: 1px solid var(--border-color);
+          background-color: #d1d5db;
+          font-weight: 600;
+          color: #374151;
+          display: flex;
+          align-items: center;
+          gap: 0.375rem;
+        }
+        
+        & > .tlnx-libs-body {
+          padding: 0.5rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.375rem;
+          background-color: var(--sidebar-bg);
+          
+          & > .tlnx-lib-item {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            color: #4b5563;
+            font-family: "Courier New", monospace;
+            font-size: 0.625rem;
+            
+            & > span {
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+    
+    /* Center Panel: Editor and Diagnostic Consoles */
+    & > .tlnx-ide-center {
+      flex: 1 1 0%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background-color: #ffffff;
+      
+      & > .tlnx-editor-filepath {
+        padding: 0.375rem 0.75rem;
+        background-color: #f1f5f9;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        
+        & > span.tlnx-label {
+          color: #64748b;
+        }
+        
+        & > span.tlnx-value {
+          font-family: "Courier New", monospace;
+          font-weight: 600;
+          color: #334155;
+        }
+      }
+      
+      & > .tlnx-editor-container {
+        flex: 1 1 0%;
+        position: relative;
+        border-bottom: 1px solid var(--border-color);
+      }
+      
+      & > .tlnx-diagnostics-panel {
+        height: 11rem; /* 176px */
+        background-color: #0f172a;
+        color: #cbd5e1;
+        display: flex;
+        flex-direction: column;
+        
+        & > .tlnx-diagnostics-header {
+          background-color: #1e293b;
+          border-bottom: 1px solid #0f172a;
+          padding: 0.25rem 0.75rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          color: #ffffff;
+          font-weight: 600;
+          
+          & > span.tlnx-status {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.75rem;
+            
+            &.tlnx-success { color: #34d399; }
+            &.tlnx-failure { color: #f87171; }
+          }
+        }
+        
+        & > .tlnx-diagnostics-body {
+          flex: 1 1 0%;
+          padding: 0.5rem;
+          font-family: "Courier New", monospace;
+          overflow-y: auto;
+          font-size: 0.6875rem;
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+          background-color: #020617;
+          
+          & > .tlnx-empty-state {
+            color: #94a3b8;
+          }
+          
+          & > .tlnx-error-item {
+            color: #f87171;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.375rem;
+            
+            & > svg {
+              flex-shrink: 0;
+              margin-top: 0.125rem;
+            }
+          }
+        }
+      }
+    }
+    
+    /* Right Panel: Interactive Step-by-Step Debugger & AutoCommit panel */
+    & > .tlnx-ide-debugger {
+      width: 18rem; /* 288px */
+      background-color: var(--sidebar-bg);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      
+      & > .tlnx-debugger-header {
+        padding: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+        background-color: #d1d5db;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        
+        & > span {
+          font-weight: 600;
+          color: #374151;
+          display: flex;
+          align-items: center;
+          gap: 0.375rem;
+        }
+        
+        & > span.tlnx-badge-running {
+          animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+          background-color: #0ea5e9;
+          color: #ffffff;
+          padding: 0.125rem 0.375rem;
+          border-radius: 0.25rem;
+          font-size: 0.5625rem;
+          font-family: "Courier New", monospace;
+        }
+      }
+      
+      & > .tlnx-debugger-controls {
+        padding: 0.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+        
+        & > .tlnx-control-buttons {
+          display: flex;
+          gap: 0.25rem;
+          
+          & > button {
+            flex: 1 1 0%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
+            transition: all 0.15s;
+            
+            &.tlnx-btn-step {
+              background-color: #ffffff;
+              border: 1px solid #cbd5e1;
+              color: #334155;
+              
+              &:hover:not(:disabled) {
+                background-color: #f1f5f9;
+              }
+              
+              &:disabled {
+                background-color: #cbd5e1;
+                color: #94a3b8;
+              }
+            }
+            
+            &.tlnx-btn-stop {
+              background-color: #fee2e2;
+              border: 1px solid #fca5a5;
+              color: #b91c1c;
+              
+              &:hover:not(:disabled) {
+                background-color: #fecaca;
+              }
+              
+              &:disabled {
+                background-color: #cbd5e1;
+                color: #94a3b8;
+                border-color: transparent;
+              }
+            }
+          }
+        }
+        
+        & > .tlnx-target-info {
+          padding: 0.375rem;
+          background-color: #f3f4f6;
+          border: 1px solid #cbd5e1;
+          border-radius: 0.25rem;
+          font-family: "Courier New", monospace;
+          font-size: 0.625rem;
+          color: #4b5563;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          
+          & > span {
+            font-weight: 700;
+            color: #374151;
+          }
+        }
+      }
+      
+      & > .tlnx-debugger-stack {
+        padding: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+        flex: 1 1 0%;
+        display: flex;
+        flex-direction: column;
+        min-height: 8.75rem; /* 140px */
+        
+        & > span.tlnx-section-title {
+          font-weight: 600;
+          color: #4b5563;
+          margin-bottom: 0.25rem;
+        }
+        
+        & > .tlnx-stack-visualizer {
+          flex: 1 1 0%;
+          background-color: #0f172a;
+          border: 1px solid #020617;
+          border-radius: 0.25rem;
+          padding: 0.5rem;
+          font-family: "Courier New", monospace;
+          color: #34d399;
+          display: flex;
+          flex-direction: column-reverse;
+          justify-content: flex-start;
+          overflow-y: auto;
+          gap: 0.25rem;
+          font-size: 0.625rem;
+          
+          & > span.tlnx-empty-stack {
+            color: #64748b;
+            text-align: center;
+            font-style: italic;
+            margin-top: auto;
+            padding: 1rem 0;
+          }
+          
+          & > .tlnx-stack-item {
+            background-color: #1e293b;
+            border-left: 2px solid #10b981;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #6ee7b7;
+            
+            & > span {
+              overflow: hidden;
+              text-overflow: ellipsis;
+              white-space: nowrap;
+            }
+            
+            & > span.tlnx-badge {
+              font-size: 0.5625rem;
+              color: #059669;
+              background-color: #020617;
+              padding: 0 0.25rem;
+              border-radius: 0.25rem;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+      
+      & > .tlnx-debugger-registers {
+        padding: 0.5rem;
+        border-bottom: 1px solid var(--border-color);
+        height: 8rem; /* 128px */
+        display: flex;
+        flex-direction: column;
+        
+        & > span.tlnx-section-title {
+          font-weight: 600;
+          color: #4b5563;
+          margin-bottom: 0.25rem;
+        }
+        
+        & > .tlnx-registers-visualizer {
+          flex: 1 1 0%;
+          background-color: #ffffff;
+          border: 1px solid #cbd5e1;
+          border-radius: 0.25rem;
+          overflow-y: auto;
+          font-family: "Courier New", monospace;
+          font-size: 0.625rem;
+          
+          & > .tlnx-empty-registers {
+            color: #94a3b8;
+            font-style: italic;
+            padding: 0.5rem;
+            text-align: center;
+          }
+          
+          & > table {
+            width: 100%;
+            text-align: left;
+            
+            & th {
+              padding: 0.25rem;
+              font-weight: 600;
+              color: #64748b;
+              background-color: #f1f5f9;
+              border-bottom: 1px solid #e2e8f0;
+            }
+            
+            & td {
+              padding: 0.25rem;
+              border-bottom: 1px solid #f1f5f9;
+              
+              &.tlnx-reg-name {
+                color: #475569;
+                font-weight: 700;
+              }
+              
+              &.tlnx-reg-val {
+                color: #047857;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                max-width: 7.5rem;
+              }
+            }
+          }
+        }
+      }
+      
+      & > .tlnx-debugger-assistant {
+        padding: 0.5rem;
+        background-color: #1e293b;
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        
+        & > .tlnx-assistant-header {
+          display: flex;
+          align-items: center;
+          gap: 0.375rem;
+          color: #34d399;
+          font-weight: 600;
+        }
+        
+        & > p {
+          font-size: 0.625rem;
+          color: #cbd5e1;
+          line-height: 1.6;
+          background-color: #0f172a;
+          padding: 0.5rem;
+          border-radius: 0.25rem;
+          border: 1px solid #334155;
+        }
+        
+        & > button {
+          width: 100%;
+          padding: 0.25rem 0;
+          background-color: #f59e0b;
+          color: #020617;
+          border-radius: 0.25rem;
+          font-weight: 700;
+          font-size: 0.625rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.25rem;
+          transition: background-color 0.15s;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+          
+          &:hover {
+            background-color: #d97706;
+          }
+        }
+      }
+    }
+  }
+
+  /* VM Debug Console Outputs bottom footer */
+  & > .tlnx-ide-console {
+    height: 8rem; /* 128px */
+    background-color: #020617;
+    border-top: 1px solid #0f172a;
+    color: #cbd5e1;
+    display: flex;
+    flex-direction: column;
+    font-family: "Courier New", monospace;
+    font-size: 0.625rem;
+    
+    & > .tlnx-console-header {
+      background-color: #0f172a;
+      padding: 0.25rem 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #ffffff;
+      border-bottom: 1px solid #020617;
+      font-weight: 600;
+      
+      & > span {
+        display: flex;
+        align-items: center;
+        gap: 0.25rem;
+      }
+      
+      & > button {
+        font-size: 0.5625rem;
+        color: #94a3b8;
+        transition: color 0.15s;
+        
+        &:hover {
+          color: #ffffff;
+        }
+      }
+    }
+    
+    & > .tlnx-console-body {
+      flex: 1 1 0%;
+      padding: 0.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      
+      & > .tlnx-log-line {
+        /* standard console line */
+      }
+    }
+  }
+}

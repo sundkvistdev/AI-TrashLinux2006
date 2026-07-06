@@ -1188,31 +1188,34 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
   };
 
   return (
-    <div className="tlml-ide-container w-full h-full bg-[#f3f4f6] text-slate-800 flex flex-col font-sans text-xs">
+    <div className="tlnx-tlml-ide">
       {/* Top Main Toolbar */}
-      <div className="flex items-center justify-between bg-[#1e293b] text-white p-2 border-b border-[#0f172a]">
-        <div className="flex items-center space-x-2">
+      <div className="tlnx-ide-toolbar">
+        <div className="tlnx-ide-toolbar-brand">
           <Terminal className="w-4 h-4 text-emerald-400" />
-          <span className="font-bold text-sm tracking-tight">TLML GSOCC IDE</span>
-          <span className="bg-[#334155] text-[10px] text-emerald-300 px-2 py-0.5 rounded font-mono">v1.2.0-PRO</span>
+          <span className="tlnx-brand-title">TLML GSOCC IDE</span>
+          <span className="tlnx-brand-badge">v1.2.0-PRO</span>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="tlnx-ide-toolbar-actions">
           <button 
             onClick={saveActiveFile}
-            className="flex items-center space-x-1 px-3 py-1 bg-[#334155] hover:bg-[#475569] text-white border border-[#475569] hover:border-emerald-400 rounded transition font-medium"
+            className="tlnx-btn-save"
+            aria-label="Save current file"
           >
             <span>Save</span>
           </button>
           <button 
             onClick={runCompile}
-            className="flex items-center space-x-1 px-3 py-1 bg-[#10b981] hover:bg-[#059669] text-white rounded transition font-medium shadow-sm"
+            className="tlnx-btn-compile"
+            aria-label="Compile TLML assembly code"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Compile Assembly</span>
           </button>
           <button 
             onClick={startDebugging}
-            className="flex items-center space-x-1 px-3 py-1 bg-sky-500 hover:bg-sky-600 text-white rounded transition font-medium shadow-sm"
+            className="tlnx-btn-debug"
+            aria-label="Start interactive step-by-step debugger"
           >
             <Play className="w-3.5 h-3.5" />
             <span>Start Debugger</span>
@@ -1221,21 +1224,21 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
       </div>
 
       {/* Main Workspace Frame */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="tlnx-ide-workspace">
         
         {/* Left Sidebar: File Explorer & Assembly list */}
-        <div className="w-56 bg-[#e5e7eb] border-r border-[#cbd5e1] flex flex-col overflow-y-auto">
+        <div className="tlnx-ide-sidebar">
           
           {/* File Explorer Title */}
-          <div className="p-2 border-b border-[#cbd5e1] flex items-center justify-between bg-[#d1d5db]">
-            <span className="font-semibold text-[#374151] flex items-center space-x-1.5">
+          <div className="tlnx-sidebar-header">
+            <span>
               <Folder className="w-3.5 h-3.5" />
               <span>Project Workspace</span>
             </span>
             <button 
               onClick={() => setIsCreatingFile(!isCreatingFile)}
-              className="p-1 hover:bg-[#cbd5e1] rounded transition"
               title="New File"
+              aria-label="Create new file"
             >
               <Plus className="w-3.5 h-3.5 text-slate-600" />
             </button>
@@ -1243,24 +1246,24 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
 
           {/* New file input block */}
           {isCreatingFile && (
-            <div className="p-2 bg-[#d1d5db] border-b border-[#cbd5e1] flex flex-col space-y-1.5">
+            <div className="tlnx-new-file-box">
               <input 
                 type="text" 
                 placeholder="filename.tlml"
                 value={newFileName}
                 onChange={(e) => setNewFileName(e.target.value)}
-                className="w-full p-1 bg-white border border-slate-400 rounded text-[11px] font-mono focus:outline-none"
+                aria-label="New file name"
               />
-              <div className="flex space-x-1">
+              <div className="tlnx-new-file-actions">
                 <button 
                   onClick={createNewFile}
-                  className="flex-1 py-0.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[10px]"
+                  className="tlnx-btn-create"
                 >
                   Create
                 </button>
                 <button 
                   onClick={() => setIsCreatingFile(false)}
-                  className="flex-1 py-0.5 bg-slate-500 hover:bg-slate-600 text-white rounded text-[10px]"
+                  className="tlnx-btn-cancel"
                 >
                   Cancel
                 </button>
@@ -1269,7 +1272,7 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
           )}
 
           {/* Files List */}
-          <div className="flex-1 p-1.5 space-y-1">
+          <div className="tlnx-files-list">
             {files.map(file => (
               <div 
                 key={file.path}
@@ -1277,15 +1280,19 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
                   setActiveFilePath(file.path);
                   setActiveContent(file.content);
                 }}
-                className={`group flex items-center justify-between px-2 py-1.5 rounded cursor-pointer transition ${
-                  activeFilePath === file.path 
-                    ? "bg-[#1e293b] text-white" 
-                    : "hover:bg-[#d1d5db] text-slate-700"
-                }`}
+                className={`tlnx-file-item ${activeFilePath === file.path ? "tlnx-active" : ""}`}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    setActiveFilePath(file.path);
+                    setActiveContent(file.content);
+                  }
+                }}
               >
-                <span className="flex items-center space-x-1.5 truncate">
-                  <FileCode className={`w-3.5 h-3.5 ${activeFilePath === file.path ? "text-emerald-400" : "text-slate-500"}`} />
-                  <span className="font-mono text-[11px] truncate">{file.name}</span>
+                <span>
+                  <FileCode className="w-3.5 h-3.5" />
+                  <span>{file.name}</span>
                 </span>
                 {file.name !== "Main.tlml" && file.name !== "Helper.tlml" && (
                   <button 
@@ -1293,7 +1300,8 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
                       e.stopPropagation();
                       deleteFile(file.path);
                     }}
-                    className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-[#cbd5e1] text-red-600 rounded transition"
+                    title={`Delete ${file.name}`}
+                    aria-label={`Delete ${file.name}`}
                   >
                     <Trash2 className="w-3 h-3" />
                   </button>
@@ -1303,43 +1311,43 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
           </div>
 
           {/* Static assembly library list */}
-          <div className="p-2 border-t border-[#cbd5e1] bg-[#d1d5db]">
-            <span className="font-semibold text-[#374151] flex items-center space-x-1.5">
+          <div className="tlnx-libs-section">
+            <div className="tlnx-libs-header">
               <Layers className="w-3.5 h-3.5" />
               <span>GSOCC System Libraries</span>
-            </span>
-          </div>
-          <div className="p-2 space-y-1.5 bg-[#e5e7eb] flex-shrink-0">
-            <div className="flex items-center space-x-1.5 text-[#4b5563] font-mono text-[10px]">
-              <Boxes className="w-3.5 h-3.5 text-blue-500" />
-              <span className="font-semibold">TLML.Lang.soc</span>
             </div>
-            <div className="flex items-center space-x-1.5 text-[#4b5563] font-mono text-[10px]">
-              <Boxes className="w-3.5 h-3.5 text-blue-500" />
-              <span className="font-semibold">TLML.Collections.soc</span>
-            </div>
-            <div className="flex items-center space-x-1.5 text-[#4b5563] font-mono text-[10px]">
-              <Boxes className="w-3.5 h-3.5 text-blue-500" />
-              <span className="font-semibold">TLML.Cryptography.soc</span>
-            </div>
-            <div className="flex items-center space-x-1.5 text-[#4b5563] font-mono text-[10px]">
-              <Boxes className="w-3.5 h-3.5 text-blue-500" />
-              <span className="font-semibold">TLML.Diagnostics.soc</span>
+            <div className="tlnx-libs-body">
+              <div className="tlnx-lib-item">
+                <Boxes className="w-3.5 h-3.5 text-blue-500" />
+                <span>TLML.Lang.soc</span>
+              </div>
+              <div className="tlnx-lib-item">
+                <Boxes className="w-3.5 h-3.5 text-blue-500" />
+                <span>TLML.Collections.soc</span>
+              </div>
+              <div className="tlnx-lib-item">
+                <Boxes className="w-3.5 h-3.5 text-blue-500" />
+                <span>TLML.Cryptography.soc</span>
+              </div>
+              <div className="tlnx-lib-item">
+                <Boxes className="w-3.5 h-3.5 text-blue-500" />
+                <span>TLML.Diagnostics.soc</span>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Center Panel: Editor and Diagnostic Consoles */}
-        <div className="flex-1 flex flex-col overflow-hidden bg-white">
+        <div className="tlnx-ide-center">
           
           {/* Active File Label */}
-          <div className="px-3 py-1.5 bg-slate-100 border-b border-slate-300 flex items-center space-x-2">
-            <span className="text-slate-500">Editing:</span>
-            <span className="font-mono font-semibold text-slate-700">{activeFilePath}</span>
+          <div className="tlnx-editor-filepath">
+            <span className="tlnx-label">Editing:</span>
+            <span className="tlnx-value">{activeFilePath}</span>
           </div>
 
           {/* Monaco Code Editor */}
-          <div className="flex-1 relative border-b border-slate-300">
+          <div className="tlnx-editor-container">
             <Editor
               height="100%"
               language={activeFilePath.endsWith(".css") ? "css" : "tlml"}
@@ -1362,32 +1370,32 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
           </div>
 
           {/* Consoles bottom tabs */}
-          <div className="h-44 bg-[#0f172a] text-slate-300 flex flex-col">
-            <div className="bg-[#1e293b] border-b border-[#0f172a] px-3 py-1 flex items-center justify-between text-white font-semibold">
+          <div className="tlnx-diagnostics-panel">
+            <div className="tlnx-diagnostics-header">
               <span>Diagnostics & Compiler Output</span>
               {buildSuccess !== null && (
-                <span className="flex items-center space-x-1 text-xs">
+                <span className={`tlnx-status ${buildSuccess ? "tlnx-success" : "tlnx-failure"}`}>
                   {buildSuccess ? (
-                    <span className="text-emerald-400 flex items-center space-x-1">
+                    <>
                       <CheckCircle2 className="w-3.5 h-3.5" />
                       <span>BUILD SUCCESSFUL</span>
-                    </span>
+                    </>
                   ) : (
-                    <span className="text-red-400 flex items-center space-x-1">
+                    <>
                       <AlertTriangle className="w-3.5 h-3.5" />
                       <span>BUILD FAILURE</span>
-                    </span>
+                    </>
                   )}
                 </span>
               )}
             </div>
-            <div className="flex-1 p-2 font-mono overflow-y-auto text-[11px] space-y-1 bg-[#020617] scrollbar-thin">
+            <div className="tlnx-diagnostics-body">
               {compilerErrors.length === 0 && (
-                <div className="text-slate-400">// Ready to compile. No compilation errors detected. Press 'Compile Assembly' to test.</div>
+                <div className="tlnx-empty-state">// Ready to compile. No compilation errors detected. Press 'Compile Assembly' to test.</div>
               )}
               {compilerErrors.map((err, i) => (
-                <div key={i} className="text-red-400 flex items-start space-x-1.5">
-                  <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0 mt-0.5" />
+                <div key={i} className="tlnx-error-item">
+                  <AlertTriangle className="w-3.5 h-3.5" />
                   <span>{err}</span>
                 </div>
               ))}
@@ -1396,27 +1404,28 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
         </div>
 
         {/* Right Panel: Interactive Step-by-Step Debugger & AutoCommit panel */}
-        <div className="w-72 bg-[#e5e7eb] border-l border-[#cbd5e1] flex flex-col overflow-y-auto">
+        <div className="tlnx-ide-debugger">
           
           {/* Debugger Pane Header */}
-          <div className="p-2 border-b border-[#cbd5e1] bg-[#d1d5db] flex items-center justify-between">
-            <span className="font-semibold text-[#374151] flex items-center space-x-1.5">
+          <div className="tlnx-debugger-header">
+            <span>
               <Play className="w-3.5 h-3.5 text-sky-500" />
               <span>Interactive Debugger</span>
             </span>
             {isDebugging && (
-              <span className="animate-pulse bg-sky-500 text-white px-1.5 py-0.5 rounded text-[9px] font-mono">
+              <span className="tlnx-badge-running">
                 RUNNING
               </span>
             )}
           </div>
 
-          <div className="p-2 space-y-2 border-b border-[#cbd5e1]">
-            <div className="flex space-x-1">
+          <div className="tlnx-debugger-controls">
+            <div className="tlnx-control-buttons">
               <button 
                 onClick={stepDebugger}
                 disabled={!isDebugging || debugCompleted}
-                className="debugger-step-btn flex-1 flex items-center justify-center space-x-1 px-2 py-1 bg-white hover:bg-slate-100 disabled:bg-slate-300 disabled:text-slate-500 border border-slate-300 rounded font-semibold text-[#334155]"
+                className="tlnx-btn-step"
+                aria-label="Step instruction pointer forward"
               >
                 <SkipForward className="w-3.5 h-3.5" />
                 <span>Step</span>
@@ -1424,7 +1433,8 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
               <button 
                 onClick={stopDebugger}
                 disabled={!isDebugging}
-                className="flex-1 flex items-center justify-center space-x-1 px-2 py-1 bg-red-100 hover:bg-red-200 disabled:bg-slate-300 disabled:text-slate-500 text-red-700 border border-red-300 rounded font-semibold"
+                className="tlnx-btn-stop"
+                aria-label="Stop current debugging session"
               >
                 <Square className="w-3.5 h-3.5" />
                 <span>Stop</span>
@@ -1433,23 +1443,23 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
             
             {/* Selected Active Executing Method */}
             {selectedMethod && (
-              <div className="p-1.5 bg-[#f3f4f6] border border-slate-300 rounded text-[10px] font-mono text-slate-600 truncate">
-                <span className="font-bold text-slate-700">Target:</span> {selectedMethod}()
+              <div className="tlnx-target-info">
+                <span>Target:</span> {selectedMethod}()
               </div>
             )}
           </div>
 
           {/* Stack Evaluation Visualizer */}
-          <div className="p-2 border-b border-[#cbd5e1] flex-1 flex flex-col min-h-[140px]">
-            <span className="font-semibold text-[#4b5563] mb-1">Evaluation Stack</span>
-            <div className="flex-1 bg-slate-900 border border-slate-950 rounded p-2 font-mono text-emerald-400 flex flex-col-reverse justify-start overflow-y-auto space-y-1 space-y-reverse text-[10px]">
+          <div className="tlnx-debugger-stack">
+            <span className="tlnx-section-title">Evaluation Stack</span>
+            <div className="tlnx-stack-visualizer">
               {debugStack.length === 0 ? (
-                <span className="text-slate-500 text-center italic mt-auto py-4">[ Stack Empty ]</span>
+                <span className="tlnx-empty-stack">[ Stack Empty ]</span>
               ) : (
                 debugStack.map((item, idx) => (
-                  <div key={idx} className="bg-slate-800 border-l-2 border-emerald-500 p-1 rounded flex items-center justify-between text-emerald-300">
-                    <span className="truncate">{item}</span>
-                    <span className="text-[9px] text-emerald-600 bg-slate-950 px-1 rounded font-bold">STK_{idx}</span>
+                  <div key={idx} className="tlnx-stack-item">
+                    <span>{item}</span>
+                    <span className="tlnx-badge">STK_{idx}</span>
                   </div>
                 ))
               )}
@@ -1457,24 +1467,24 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
           </div>
 
           {/* Local Registers visual table */}
-          <div className="p-2 border-b border-[#cbd5e1] h-32 flex flex-col">
-            <span className="font-semibold text-[#4b5563] mb-1">Local Registers</span>
-            <div className="flex-1 bg-white border border-slate-300 rounded overflow-y-auto font-mono text-[10px]">
+          <div className="tlnx-debugger-registers">
+            <span className="tlnx-section-title">Local Registers</span>
+            <div className="tlnx-registers-visualizer">
               {Object.keys(debugVars).length === 0 ? (
-                <div className="text-slate-400 italic p-2 text-center">[ None initialized ]</div>
+                <div className="tlnx-empty-registers">[ None initialized ]</div>
               ) : (
-                <table className="w-full text-left">
+                <table>
                   <thead>
-                    <tr className="bg-slate-100 border-b border-slate-200">
-                      <th className="p-1 font-semibold text-slate-500">Register</th>
-                      <th className="p-1 font-semibold text-slate-500">Value</th>
+                    <tr>
+                      <th>Register</th>
+                      <th>Value</th>
                     </tr>
                   </thead>
                   <tbody>
                     {Object.entries(debugVars).map(([key, val]) => (
-                      <tr key={key} className="border-b border-slate-100">
-                        <td className="p-1 text-slate-600 font-bold">{key}</td>
-                        <td className="p-1 text-emerald-700 truncate max-w-[120px]">{val}</td>
+                      <tr key={key}>
+                        <td className="tlnx-reg-name">{key}</td>
+                        <td className="tlnx-reg-val">{val}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1484,14 +1494,14 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
           </div>
 
           {/* Branded AutoCommit Panel */}
-          <div className="p-2 bg-[#1e293b] text-white flex flex-col space-y-2">
-            <div className="flex items-center space-x-1.5 text-emerald-400 font-semibold">
+          <div className="tlnx-debugger-assistant">
+            <div className="tlnx-assistant-header">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
               <span>AutoCommit Assistant</span>
             </div>
             
             {/* Smart helpful advice text */}
-            <p className="text-[10px] text-slate-300 leading-relaxed bg-[#0f172a] p-2 rounded border border-slate-700">
+            <p>
               {autoCommitTip}
             </p>
 
@@ -1499,7 +1509,7 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
             {autoCommitSnippet && (
               <button 
                 onClick={applyAutoCommitSnippet}
-                className="w-full py-1 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded font-bold text-[10px] flex items-center justify-center space-x-1 transition shadow-sm"
+                aria-label={`Insert precompiled code snippet: ${autoCommitSnippet.label}`}
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>{autoCommitSnippet.label}</span>
@@ -1510,22 +1520,22 @@ Custom VFS styling sheet in VFS: "/home/tux/Documents/custom_theme.css" can be u
       </div>
 
       {/* VM Debug Console Outputs bottom footer */}
-      <div className="h-32 bg-[#020617] border-t border-[#0f172a] text-slate-300 flex flex-col font-mono text-[10px]">
-        <div className="bg-[#0f172a] px-3 py-1 flex items-center justify-between text-white border-b border-[#020617] font-semibold">
-          <span className="flex items-center space-x-1">
+      <div className="tlnx-ide-console">
+        <div className="tlnx-console-header">
+          <span>
             <Terminal className="w-3.5 h-3.5 text-emerald-400" />
             <span>Virtual Console Logs & Debug Stream</span>
           </span>
           <button 
             onClick={() => setConsoleLogs([])}
-            className="text-[9px] text-slate-400 hover:text-white transition"
+            aria-label="Clear all virtual console logs"
           >
             Clear Log
           </button>
         </div>
-        <div className="flex-1 p-2 overflow-y-auto space-y-1 scrollbar-thin">
+        <div className="tlnx-console-body">
           {consoleLogs.map((log, idx) => (
-            <div key={idx} className="console-log-text">
+            <div key={idx} className="tlnx-log-line">
               {log}
             </div>
           ))}
